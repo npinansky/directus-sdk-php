@@ -53,8 +53,11 @@ class Entry implements ResponseInterface, \ArrayAccess
             $data = $data['data'];
         }
 
-        foreach($data as $field => $value) {
-            if (isset($value['rows']) || (isset($value['data']) && ArrayUtils::isNumericKeys($value['data']))) {
+        foreach ($data as $field => $value) {
+            if ((isset($value['rows']) &&
+                    (array_key_exists('id', $value) && !in_array($value['id'], ['textarea', 'textinput'])))
+                || (isset($value['data']) && ArrayUtils::isNumericKeys($value['data']))
+            ) {
                 $this->data[$field] = new EntryCollection($value);
             } else if (is_array($value)) {
                 $this->data[$field] = new static($value);
